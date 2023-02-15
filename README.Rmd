@@ -2,7 +2,7 @@
 title: "JUPITER-06 PD-L1 TPS <1% subgroup analysis"
 author: "Joseph J Zhao, Filippo Pietrantonio, Raghav Sundar"
 date: "15/2/2023"
-output: html_document
+output: github_document
 editor_options: 
   chunk_output_type: console
 ---
