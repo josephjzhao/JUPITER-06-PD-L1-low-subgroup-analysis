@@ -1,14 +1,26 @@
 JUPITER-06 PD-L1 TPS \<1% subgroup analysis
 ================
-Joseph J Zhao, Filippo Pietrantonio, Raghav Sundar
-15/2/2023
+Joseph J Zhao, MBBS<sup>1,2</sup>; Filippo Pietrantonio, MD<sup>3</sup>;
+Raghav Sundar, MBBS, PhD<sup>1,2</sup>.
+Feburary 15<sup>th</sup>, 2023.
 
-### Reply to Gao *et al*
+<sup>1</sup> Yong Loo Lin School of Medicine, National University of
+Singapore, Singapore
 
-Original article: Yap, D. W. T. *et al*. Effectiveness of Immune
-Checkpoint Inhibitors in Patients With Advanced Esophageal Squamous Cell
-Carcinoma: A Meta-analysis Including Low PD-L1 Subgroups. JAMA Oncology,
-<doi:10.1001/jamaoncol.2022.5816> (2022).
+<sup>2</sup> Department of Haematology-Oncology, National University
+Cancer Institute, Singapore
+
+<sup>3</sup> Medical Oncology Department, Fondazione IRCCS Istituto
+Nazionale dei Tumori, Milan, Italy
+
+### Letter in Reply to Gao *et al*
+
+Regarding concerns raised pertaining to our original article: Yap, D. W.
+T. *et al*. Effectiveness of Immune Checkpoint Inhibitors in Patients
+With Advanced Esophageal Squamous Cell Carcinoma: A Meta-analysis
+Including Low PD-L1 Subgroups. JAMA Oncology,
+<doi:10.1001/jamaoncol.2022.5816> (2022). This Github repository
+contains supporting workings, data, and figures for our Letter in Reply.
 
 ### Load packages
 
@@ -39,9 +51,6 @@ for (package.name in package.name){
 ``` r
 wd="C:/Users/jzhao/OneDrive/Research_Cloud/NUH_NCIS/pdl1_escc_kms/"
 setwd(wd)
-
-dir.create(paste(wd,"output/", Sys.Date(), sep=""))
-setwd(paste(wd, "output/",Sys.Date(), sep="") )
 ```
 
 ### Load reconstructed time-to-event data of JUPITER-06 PD-L1 TPS \<1% subgroups reported by Wu *et al* (figures 1B &D)
@@ -74,7 +83,7 @@ head(df)
     ## 5 1.86       0 Placebo plus TP OS     
     ## 6 2.82       1 Placebo plus TP OS
 
-### Compare reconstructed KM plots to original plots
+### Figure 1 Compare reconstructed KM plots to original plots
 
 ``` r
 for (i.outcome in unique(df$outcome)){
@@ -141,7 +150,7 @@ quantile(prodlim(Hist(time=time, event=status)~arm, data=subset(df, df$outcome==
     ## 5 1.00      3.1   3.1   3.7
     ## Median time (IQR):8.27 (6.42;13.76)
 
-### Evaluate for PH assumption with the Grambsch-Therneau test and plotted Schoenfeld residuals
+### Figure 2 Evaluate for proportional hazards assumption with the Grambsch-Therneau test and plotted Schoenfeld residuals
 
 ``` r
 for (i.outcome in unique(df$outcome)){print(ggcoxzph(cox.zph(coxph(Surv(time, status)~arm, data=subset(df, df$outcome==i.outcome))), title=i.outcome))}
@@ -149,7 +158,7 @@ for (i.outcome in unique(df$outcome)){print(ggcoxzph(cox.zph(coxph(Surv(time, st
 
 ![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
 
-### Time-varying analysis
+### Figure 3 Time-varying RMST-difference analysis
 
 ``` r
 for (i.outcome in unique(df$outcome)){
@@ -177,3 +186,7 @@ for (i.outcome in unique(df$outcome)){
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
+
+Abbreviations: PD-L1, programmed death ligand 1; OS, overall survival;
+PFS, progression-free survival; RMST, restricted mean survival time;
+TPS, Tumor Proportion Score; TP, paclitaxel plus cisplatin.

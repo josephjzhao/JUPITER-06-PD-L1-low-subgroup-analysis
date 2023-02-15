@@ -1,15 +1,21 @@
 ---
 title: "JUPITER-06 PD-L1 TPS <1% subgroup analysis"
-author: "Joseph J Zhao, Filippo Pietrantonio, Raghav Sundar"
-date: "15/2/2023"
+author: "Joseph J Zhao, MBBS^1,2^; Filippo Pietrantonio, MD^3^; Raghav Sundar, MBBS, PhD^1,2^. "
+date: "Feburary 15^th^, 2023."
 output: github_document
 editor_options: 
   chunk_output_type: console
 ---
 
-### Reply to Gao *et al*
+^1^ Yong Loo Lin School of Medicine, National University of Singapore, Singapore
 
-Original article: Yap, D. W. T. *et al*. Effectiveness of Immune Checkpoint Inhibitors in Patients With Advanced Esophageal Squamous Cell Carcinoma: A Meta-analysis Including Low PD-L1 Subgroups. JAMA Oncology, doi:10.1001/jamaoncol.2022.5816 (2022).
+^2^ Department of Haematology-Oncology, National University Cancer Institute, Singapore
+
+^3^ Medical Oncology Department, Fondazione IRCCS Istituto Nazionale dei Tumori, Milan, Italy
+
+### Letter in Reply to Gao *et al*
+
+Regarding concerns raised pertaining to our original article: Yap, D. W. T. *et al*. Effectiveness of Immune Checkpoint Inhibitors in Patients With Advanced Esophageal Squamous Cell Carcinoma: A Meta-analysis Including Low PD-L1 Subgroups. JAMA Oncology, doi:10.1001/jamaoncol.2022.5816 (2022). This Github repository contains supporting workings, data, and figures for our Letter in Reply.
 
 ### Load packages
 
@@ -43,9 +49,6 @@ for (package.name in package.name){
 wd="C:/Users/jzhao/OneDrive/Research_Cloud/NUH_NCIS/pdl1_escc_kms/"
 setwd(wd)
 
-dir.create(paste(wd,"output/", Sys.Date(), sep=""))
-setwd(paste(wd, "output/",Sys.Date(), sep="") )
-
 ```
 
 ### Load reconstructed time-to-event data of JUPITER-06 PD-L1 TPS <1% subgroups reported by Wu *et al* (figures 1B &D)
@@ -65,9 +68,9 @@ head(df)
 
 ```
 
-### Compare reconstructed KM plots to original plots
+### Figure 1 Compare reconstructed KM plots to original plots
 
-```{r fig.height=6, fig.width=7}
+```{r fig.height=5, fig.width=5}
 
 for (i.outcome in unique(df$outcome)){
   
@@ -107,7 +110,7 @@ quantile(prodlim(Hist(time=time, event=status)~arm, data=subset(df, df$outcome==
 
 ```
 
-### Evaluate for PH assumption with the Grambsch-Therneau test and plotted Schoenfeld residuals
+### Figure 2 Evaluate for proportional hazards assumption with the Grambsch-Therneau test and plotted Schoenfeld residuals
 
 ```{r warning=FALSE}
 
@@ -115,7 +118,7 @@ for (i.outcome in unique(df$outcome)){print(ggcoxzph(cox.zph(coxph(Surv(time, st
 
 ```
 
-### Time-varying analysis
+### Figure 3 Time-varying RMST-difference analysis
 
 ```{r warning=FALSE}
 
@@ -144,4 +147,4 @@ for (i.outcome in unique(df$outcome)){
 
 ```    
           
-          
+Abbreviations: PD-L1, programmed death ligand 1; OS, overall survival; PFS, progression-free survival; RMST, restricted mean survival time; TPS, Tumor Proportion Score; TP, paclitaxel plus cisplatin.
