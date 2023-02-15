@@ -12,7 +12,7 @@ Cancer Institute, Singapore
 <sup>3</sup> Medical Oncology Department, Fondazione IRCCS Istituto
 Nazionale dei Tumori, Milan, Italy
 
-### Letter in Reply to Gao *et al*
+### Letter in Reply to Gao *et al* - Supporting documents
 
 Regarding concerns raised pertaining to our original article: Yap, D. W.
 T. *et al*. Effectiveness of Immune Checkpoint Inhibitors in Patients

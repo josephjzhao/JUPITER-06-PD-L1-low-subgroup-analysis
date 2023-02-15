@@ -13,7 +13,7 @@ editor_options:
 
 ^3^ Medical Oncology Department, Fondazione IRCCS Istituto Nazionale dei Tumori, Milan, Italy
 
-### Letter in Reply to Gao *et al*
+### Letter in Reply to Gao *et al* - Supporting documents
 
 Regarding concerns raised pertaining to our original article: Yap, D. W. T. *et al*. Effectiveness of Immune Checkpoint Inhibitors in Patients With Advanced Esophageal Squamous Cell Carcinoma: A Meta-analysis Including Low PD-L1 Subgroups. JAMA Oncology, doi:10.1001/jamaoncol.2022.5816 (2022). This Github repository contains supporting workings, data, and figures for our Letter in Reply.
 
