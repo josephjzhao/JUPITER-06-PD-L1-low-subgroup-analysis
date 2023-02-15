@@ -1,0 +1,147 @@
+---
+title: "JUPITER-06 PD-L1 TPS <1% subgroup analysis"
+author: "Joseph J Zhao, Filippo Pietrantonio, Raghav Sundar"
+date: "15/2/2023"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+### Reply to Gao *et al*
+
+Original article: Yap, D. W. T. *et al*. Effectiveness of Immune Checkpoint Inhibitors in Patients With Advanced Esophageal Squamous Cell Carcinoma: A Meta-analysis Including Low PD-L1 Subgroups. JAMA Oncology, doi:10.1001/jamaoncol.2022.5816 (2022).
+
+### Load packages
+
+```{r warning = FALSE, message = FALSE}
+package.name=c(# data reconstruction
+  "IPDfromKM",
+  # data manipulation
+  "tidyverse", "readr", "readxl", "dplyr", "tidyr", "lubridate", "tibble", "plyr", "devtools", "stringr", "stringi",
+  # survival analysis
+  "survminer", "survival", "rstpm2", "survRM2", "prodlim",
+  # plotting
+  "ggplot2"
+)
+
+for (package.name in package.name){
+  tryCatch(
+  {
+  if (!require(package.name, character.only = TRUE)){ 
+    install.packages(package.name, character.only = TRUE) 
+    library(package.name, character.only = TRUE)} else {library(package.name, character.only = TRUE)}
+  }, 
+    error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+}
+
+```
+
+### Set working directory
+
+```{r message=FALSE, warning=FALSE}
+
+wd="C:/Users/jzhao/OneDrive/Research_Cloud/NUH_NCIS/pdl1_escc_kms/"
+setwd(wd)
+
+dir.create(paste(wd,"output/", Sys.Date(), sep=""))
+setwd(paste(wd, "output/",Sys.Date(), sep="") )
+
+```
+
+### Load reconstructed time-to-event data of JUPITER-06 PD-L1 TPS <1% subgroups reported by Wu *et al* (figures 1B &D)
+
+Reconstruction of survival data was conducted separately with the *IPDfromKM* package. 
+
+Reference: Wu, H. X. *et al*. Clinical Benefit of First-Line Programmed Death-1 Antibody Plus Chemotherapy in Low Programmed Cell Death Ligand 1-Expressing Esophageal Squamous Cell Carcinoma: A Post Hoc Analysis of JUPITER-06 and Meta-Analysis. J Clin Oncol, Jco2201490, doi:10.1200/jco.22.01490 (2022).
+
+```{r warning = FALSE, message = FALSE}
+
+files <- list.files(path = paste0(wd, "data/recon/"), pattern = paste(".csv",sep=""), full.names = T)
+df <- sapply(files, read_csv, simplify=F) %>% 
+          bind_rows(.id = "id") %>% 
+          select(time, status, arm, outcome)
+
+head(df)
+
+```
+
+### Compare reconstructed KM plots to original plots
+
+```{r fig.height=6, fig.width=7}
+
+for (i.outcome in unique(df$outcome)){
+  
+  cox=coxph(Surv(time, status)~arm, data=subset(df, df$outcome==i.outcome))
+  sum.cox=summary(cox)
+  
+  km=survfit(Surv(time, status)~arm, data=subset(df, df$outcome==i.outcome))
+  
+  plot_km = ggsurvplot(km,
+                      data = subset(df, df$outcome==i.outcome), 
+                      size=0.8,
+                      risk.table = TRUE,    
+                      censor.shape="|",
+                      censor.size = 1.2,
+                      palette = c("black","steelblue4"),
+                      xlim = c(0,max(subset(df, df$outcome==i.outcome)$time)),
+                      xlab = "Time, months",
+                      break.time.by = 3,   
+                      ggtheme = theme_bw(),
+                      risk.table.y.text = F,
+                      ncensor.plot = T,     
+                      risk.table.fontsize=2.7,
+                      legend.labs = (cox$xlevels$arm),
+                      title=paste0("Reconstructed JUPITER-06 PD-L1 TPS<1%: ", i.outcome)
+                      )
+  
+  print(plot_km)
+}
+
+```
+
+### Calculate follow-up time with reverse KM method with the *prodlim* package
+
+```{r }
+
+quantile(prodlim(Hist(time=time, event=status)~arm, data=subset(df, df$outcome=="OS"), reverse=TRUE))
+
+```
+
+### Evaluate for PH assumption with the Grambsch-Therneau test and plotted Schoenfeld residuals
+
+```{r warning=FALSE}
+
+for (i.outcome in unique(df$outcome)){print(ggcoxzph(cox.zph(coxph(Surv(time, status)~arm, data=subset(df, df$outcome==i.outcome))), title=i.outcome))}
+
+```
+
+### Time-varying analysis
+
+```{r warning=FALSE}
+
+for (i.outcome in unique(df$outcome)){
+  
+  df_temp=subset(df, df$outcome==i.outcome)
+  df_temp$arm=ifelse(df_temp$arm=="Placebo plus TP", 0, 1)
+  
+  # fit model for stpm2
+  fit=stpm2(Surv(time, status) ~ arm, data=df_temp,  df=5)
+  pred=predict(fit, newdata=data.frame(arm=0), type="rmstdiff", var="arm", grid=TRUE, full=TRUE, se.fit=TRUE)
+  
+  plot_timevar=ggplot(pred, aes(x=time, y=Estimate, ymin=lower, ymax=upper)) +
+            geom_ribbon(alpha=0.4, fill="steelblue4") +
+            geom_line(size=1, color="darkgoldenrod4")+
+            theme(plot.title= element_text(face="bold", size=14), axis.text=element_text(color="black"))+
+            theme_bw()+
+            geom_hline(yintercept=0, linetype="dashed")+
+            labs(color="black", x = "Time, months", y = "Restricted mean survival time difference", 
+                 title = paste0("JUPITER-06 PD-L1 TPS<1% subgroup\nTime-varying RMST-differences from reconstructed ", i.outcome, " KM plots"), face="bold")
+  
+  
+  print(plot_timevar)
+    
+}
+
+```    
+          
+          
