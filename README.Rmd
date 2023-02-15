@@ -1,7 +1,7 @@
 ---
 title: "JUPITER-06 PD-L1 TPS <1% subgroup analysis"
-author: "Joseph J Zhao, MBBS^1,2^; Filippo Pietrantonio, MD^3^; Raghav Sundar, MBBS, PhD^1,2^. "
-date: "Feburary 15^th^, 2023."
+author: "Joseph J Zhao, MBBS^1,2^; Filippo Pietrantonio, MD^3^; Raghav Sundar, MBBS, PhD^1,2^"
+date: ""
 output: github_document
 editor_options: 
   chunk_output_type: console

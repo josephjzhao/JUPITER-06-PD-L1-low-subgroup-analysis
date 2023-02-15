@@ -1,8 +1,7 @@
 JUPITER-06 PD-L1 TPS \<1% subgroup analysis
 ================
 Joseph J Zhao, MBBS<sup>1,2</sup>; Filippo Pietrantonio, MD<sup>3</sup>;
-Raghav Sundar, MBBS, PhD<sup>1,2</sup>.
-Feburary 15<sup>th</sup>, 2023.
+Raghav Sundar, MBBS, PhD<sup>1,2</sup>
 
 <sup>1</sup> Yong Loo Lin School of Medicine, National University of
 Singapore, Singapore
