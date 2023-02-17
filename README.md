@@ -107,7 +107,6 @@ for (i.outcome in unique(df$outcome)){
                       break.time.by = 3,   
                       ggtheme = theme_bw(),
                       risk.table.y.text = F,
-                      ncensor.plot = T,     
                       risk.table.fontsize=2.7,
                       legend.labs = (cox$xlevels$arm),
                       title=paste0("Reconstructed JUPITER-06 PD-L1 TPS<1%: ", i.outcome)
@@ -160,7 +159,7 @@ for (i.outcome in unique(df$outcome)){print(ggcoxzph(cox.zph(coxph(Surv(time, st
 
 ![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
 
-### Figure 3 Hazard differences over time
+### Figure 3 Hazard difference over time
 
 ``` r
 for (i.outcome in unique(df$outcome)){
@@ -177,12 +176,24 @@ for (i.outcome in unique(df$outcome)){
             geom_line(size=1, color="darkgoldenrod4") +
             theme(plot.title= element_text(face="bold", size=14), axis.text=element_text(color="black"))+
             theme_bw()+
+            coord_cartesian(xlim=c(0, 0.9*max(df_temp$time)))+
             geom_hline(yintercept=0, linetype="dashed")+
-            labs(color="black", x = "Time, months", y = "Hazard difference\nfavours Toripalimab plus TP | favours Placebo plus TP", 
+            labs(color="black", x = "", y = "Hazard difference\nfavours Toripalimab plus TP | favours Placebo plus TP", 
                  title = paste0("JUPITER-06 PD-L1 TPS<1% subgroup\nHazard-differences over time from reconstructed ", i.outcome, " KM plots"), face="bold")
   
   
-  print(plot_timevar)
+  df_temp_censor=subset(df, df$status==0 & df$outcome==i.outcome)
+    
+  plot_censor=ggplot(aes(x=time, fill=arm), data=df_temp_censor)+
+    geom_histogram( position="identity", width=0.2, alpha=0.3)+
+    theme_bw()+
+    coord_cartesian(xlim=c(0, 0.9*max(df_temp$time)))+
+    labs(y="censorship count", x="Time, months")+
+    scale_fill_manual(values=c("black", "steelblue4"))
+  
+  ggarrange(plot_timevar, plot_censor, ncol = 1, nrow = 2,
+            heights = c(2, 0.5),
+            common.legend = TRUE, legend = "bottom", align='v') %>% print
     
 }
 ```
