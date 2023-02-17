@@ -140,9 +140,10 @@ for (i.outcome in unique(df$outcome)){
             coord_cartesian(xlim=c(0, 0.9*max(df_temp$time)))+
             geom_hline(yintercept=0, linetype="dashed")+
             labs(color="black", x = "", y = "Hazard difference\nfavours Toripalimab plus TP | favours Placebo plus TP", 
-                 title = paste0("JUPITER-06 PD-L1 TPS<1% subgroup\nHazard-differences over time from reconstructed ", i.outcome, " KM plots"), face="bold")
+                 title = paste0("JUPITER-06 PD-L1 TPS<1% subgroup\nHazard-difference over time from reconstructed ", i.outcome, " KM plots"), face="bold")
   
   
+  # historam for censorship counts
   df_temp_censor=subset(df, df$status==0 & df$outcome==i.outcome)
     
   plot_censor=ggplot(aes(x=time, fill=arm), data=df_temp_censor)+
