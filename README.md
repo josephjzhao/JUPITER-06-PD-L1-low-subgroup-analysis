@@ -173,8 +173,8 @@ for (i.outcome in unique(df$outcome)){
   pred=predict(fit, newdata=data.frame(arm=0), type="hdiff", var="arm", exposed=function(data) transform(data, arm=1), grid=TRUE, full=TRUE, se.fit=TRUE)
   
   plot_timevar=ggplot(pred, aes(x=time, y=Estimate, ymin=lower, ymax=upper)) +
-            geom_ribbon(alpha=0.4, fill="steelblue4") +
-            geom_line(size=1, color="darkgoldenrod4")+
+            geom_ribbon(alpha=0.4, fill="steelblue4") + 
+            geom_line(size=1, color="darkgoldenrod4") +
             theme(plot.title= element_text(face="bold", size=14), axis.text=element_text(color="black"))+
             theme_bw()+
             geom_hline(yintercept=0, linetype="dashed")+
