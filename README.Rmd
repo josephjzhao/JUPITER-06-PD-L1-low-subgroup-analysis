@@ -139,7 +139,7 @@ for (i.outcome in unique(df$outcome)){
             theme(plot.title= element_text(face="bold", size=14), axis.text=element_text(color="black"))+
             theme_bw()+
             geom_hline(yintercept=0, linetype="dashed")+
-            labs(color="black", x = "Time, months", y = "Hazard difference\nfavours Placebo plus TP | favours Toripalimab plus TP", 
+            labs(color="black", x = "Time, months", y = "Hazard difference\nfavours Toripalimab plus TP | favours Placebo plus TP", 
                  title = paste0("JUPITER-06 PD-L1 TPS<1% subgroup\nHazard-differences over time from reconstructed ", i.outcome, " KM plots"), face="bold")
   
   
