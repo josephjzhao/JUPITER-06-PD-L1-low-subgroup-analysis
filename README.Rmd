@@ -129,7 +129,7 @@ for (i.outcome in unique(df$outcome)){
   df_temp=subset(df, df$outcome==i.outcome)
   df_temp$arm=ifelse(df_temp$arm=="Placebo plus TP", 0, 1)
   
-  # fit model for stpm2
+  # fit model for stpm2 
   fit=stpm2(Surv(time, status) ~ arm, data=df_temp, df=3)
   pred=predict(fit, newdata=data.frame(arm=0), type="hdiff", var="arm", exposed=function(data) transform(data, arm=1), grid=TRUE, full=TRUE, se.fit=TRUE)
   
