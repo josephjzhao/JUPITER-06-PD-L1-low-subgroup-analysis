@@ -18,8 +18,10 @@ Regarding concerns raised pertaining to our original article: Yap, D. W.
 T. *et al*. Effectiveness of Immune Checkpoint Inhibitors in Patients
 With Advanced Esophageal Squamous Cell Carcinoma: A Meta-analysis
 Including Low PD-L1 Subgroups. JAMA Oncology,
-<doi:10.1001/jamaoncol.2022.5816> (2022). This Github repository
-contains supporting workings, data, and figures for our Letter in Reply.
+<doi:10.1001/jamaoncol.2022.5816> (2022).
+
+This Github repository contains supporting workings, data, and figures
+for our Letter in Reply.
 
 ### Load packages
 
@@ -55,7 +57,8 @@ setwd(wd)
 ### Load reconstructed time-to-event data of JUPITER-06 PD-L1 TPS \<1% subgroups reported by Wu *et al* (figures 1B &D)
 
 Reconstruction of survival data was conducted separately with the
-*IPDfromKM* package.
+*IPDfromKM* package. Reconstructed data is provided in the
+“reconstructed_data” folder.
 
 Reference: Wu, H. X. *et al*. Clinical Benefit of First-Line Programmed
 Death-1 Antibody Plus Chemotherapy in Low Programmed Cell Death Ligand
@@ -67,7 +70,7 @@ JUPITER-06 and Meta-Analysis. J Clin Oncol, Jco2201490,
 files <- list.files(path = paste0(wd, "data/recon/"), pattern = paste(".csv",sep=""), full.names = T)
 df <- sapply(files, read_csv, simplify=F) %>% 
           bind_rows(.id = "id") %>% 
-          select(time, status, arm, outcome)
+          dplyr::select(time, status, arm, outcome)
 
 head(df)
 ```
@@ -157,7 +160,7 @@ for (i.outcome in unique(df$outcome)){print(ggcoxzph(cox.zph(coxph(Surv(time, st
 
 ![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
 
-### Figure 3 Time-varying RMST-difference analysis
+### Figure 3 Hazard differences over time
 
 ``` r
 for (i.outcome in unique(df$outcome)){
@@ -166,8 +169,8 @@ for (i.outcome in unique(df$outcome)){
   df_temp$arm=ifelse(df_temp$arm=="Placebo plus TP", 0, 1)
   
   # fit model for stpm2
-  fit=stpm2(Surv(time, status) ~ arm, data=df_temp,  df=5)
-  pred=predict(fit, newdata=data.frame(arm=0), type="rmstdiff", var="arm", grid=TRUE, full=TRUE, se.fit=TRUE)
+  fit=stpm2(Surv(time, status) ~ arm, data=df_temp, df=3)
+  pred=predict(fit, newdata=data.frame(arm=0), type="hdiff", var="arm", exposed=function(data) transform(data, arm=1), grid=TRUE, full=TRUE, se.fit=TRUE)
   
   plot_timevar=ggplot(pred, aes(x=time, y=Estimate, ymin=lower, ymax=upper)) +
             geom_ribbon(alpha=0.4, fill="steelblue4") +
@@ -175,8 +178,8 @@ for (i.outcome in unique(df$outcome)){
             theme(plot.title= element_text(face="bold", size=14), axis.text=element_text(color="black"))+
             theme_bw()+
             geom_hline(yintercept=0, linetype="dashed")+
-            labs(color="black", x = "Time, months", y = "Restricted mean survival time difference", 
-                 title = paste0("JUPITER-06 PD-L1 TPS<1% subgroup\nTime-varying RMST-differences from reconstructed ", i.outcome, " KM plots"), face="bold")
+            labs(color="black", x = "Time, months", y = "Hazard difference\nfavours Placebo plus TP | favours Toripalimab plus TP", 
+                 title = paste0("JUPITER-06 PD-L1 TPS<1% subgroup\nHazard-differences over time from reconstructed ", i.outcome, " KM plots"), face="bold")
   
   
   print(plot_timevar)
