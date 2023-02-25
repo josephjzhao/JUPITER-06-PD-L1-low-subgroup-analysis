@@ -23,7 +23,7 @@ This Github repository contains supporting workings, data, and figures for our L
 
 ```{r warning = FALSE, message = FALSE}
 package.name=c(# data reconstruction
-  "IPDfromKM",
+  "IPDfromKM", 
   # data manipulation
   "tidyverse", "readr", "readxl", "dplyr", "tidyr", "lubridate", "tibble", "plyr", "devtools", "stringr", "stringi",
   # survival analysis
@@ -140,18 +140,21 @@ for (i.outcome in unique(df$outcome)){
             coord_cartesian(xlim=c(0, 0.9*max(df_temp$time)))+
             geom_hline(yintercept=0, linetype="dashed")+
             labs(color="black", x = "", y = "Hazard difference\nfavours Toripalimab plus TP | favours Placebo plus TP", 
-                 title = paste0("JUPITER-06 PD-L1 TPS<1% subgroup\nHazard-difference over time from reconstructed ", i.outcome, " KM plots"), face="bold")
-  
+                 title = paste0("JUPITER-06 PD-L1 TPS<1% subgroup\nHazard-difference over time from reconstructed ", i.outcome, " KM plots"), face="bold") +
+            geom_vline(xintercept = pred$time[pred$Estimate==min(pred$Estimate)], linetype="dashed", size=0.8) +
+            annotate("text", x=pred$time[pred$Estimate==min(pred$Estimate)]+0.5, y=min(pred$Estimate)-0.005, hjust=0, label=paste0("Maximal hazard difference: ", format(round(pred$time[pred$Estimate==min(pred$Estimate)], 3), nsmall=3), " months"))
   
   # historam for censorship counts
   df_temp_censor=subset(df, df$status==0 & df$outcome==i.outcome)
-    
+  
   plot_censor=ggplot(aes(x=time, fill=arm), data=df_temp_censor)+
     geom_histogram( position="identity", width=0.2, alpha=0.3)+
     theme_bw()+
     coord_cartesian(xlim=c(0, 0.9*max(df_temp$time)))+
-    labs(y="censorship count", x="Time, months")+
-    scale_fill_manual(values=c("black", "steelblue4"))
+    labs(y="censorship count", x="Time, months", fill="")+
+    scale_fill_manual(values=c("black", "steelblue4")) +
+    geom_vline(xintercept = median(df_temp_censor$time), linetype="dashed", size=0.8) +
+            annotate("text", x=median(df_temp_censor$time)+0.3, y=4, hjust=0, label=paste0("Median: ", format(round(median(df_temp_censor$time), 3), nsmall=3), " months"))
   
   ggarrange(plot_timevar, plot_censor, ncol = 1, nrow = 2,
             heights = c(2, 0.5),
